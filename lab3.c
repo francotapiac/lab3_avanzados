@@ -8,6 +8,9 @@
 #include "funciones.h"
 
 
+//Función que crea nodo de lista
+//Entrada: string representativo a la colonia de bacterias
+//Salida: lista con colonia de bacterias
 lista *crearNodo(char *coloniaBacteria){
 
 	lista *nueva = (lista*)malloc(sizeof(lista));
@@ -17,17 +20,9 @@ lista *crearNodo(char *coloniaBacteria){
 	return nueva;
 }
 
-int largo(lista *l){
-
-	int i = 0;
-	lista *indice = l;
-	while(indice != NULL){
-		indice = indice->siguiente;
-		i++;
-	}
-	return i;
-}
-
+//Función que inserta un elemento al final de la lista
+//Entrada: lista l, colonia de string
+//Salida: lista con nuevo elemento
 lista *insertarFinal(lista *l,char *colonia){
 
 	lista *nodo = crearNodo(colonia);
@@ -42,6 +37,9 @@ lista *insertarFinal(lista *l,char *colonia){
 	return l;
 }
 
+//Función que borra cada elemento de la lista
+//Entrada: lista a borrar
+//Salida: lista vacía
 lista *anular(lista *l){
 
 	while(l != NULL){
@@ -51,6 +49,9 @@ lista *anular(lista *l){
 
 }
 
+//Función que borra elemento de la lista
+//Entrada: lista con elemento a borrar
+//Salida: lista sin elemento
 lista *borrar(lista *l){
 
 	if(l != NULL){
@@ -60,9 +61,6 @@ lista *borrar(lista *l){
 	}
 	return l;
 }
-
-
-
 
 //Función encargada de abrir el archivo entrada.in
 //Entrada: nombre archivo
@@ -79,6 +77,8 @@ FILE *abrirArchivo(char *nombre_archivo){
 }
 
 //Función que lee y guarda colonia inicial
+//Entrada: archivo
+//Salida: colonia presente en el archivo
 char *leerArchivo(FILE *archivo){
 
 	char *coloniaInicial = (char*)malloc(sizeof(char)*30);
@@ -87,7 +87,9 @@ char *leerArchivo(FILE *archivo){
 	return coloniaInicial;
 }
 
-//Función que compara cada bacteria
+//Función que compara cada bacteria de la colonia
+//Entrada: char con el primer elemento, char con el segundo elemento
+//Salida: nueva bacteria
 char compararColonia(char primera, char segunda){
 
 	if(primera == '1' && segunda == '2')
@@ -106,6 +108,9 @@ char compararColonia(char primera, char segunda){
 
 }
 
+//Función que encuentra menor elemento de la lista
+//Entrada: lista con colonias
+//Salida: menor colonia
 char *encontrarMenor(lista *l){
 
 	char *menor = (char*)malloc(sizeof(char)*30);
@@ -113,7 +118,6 @@ char *encontrarMenor(lista *l){
 	lista *indice = l->siguiente;
 	while(indice != NULL){
 		if(strcmp(indice->coloniaBacteria,menor) < 0){
-		//if(atoi(indice->coloniaBacteria) < atoi(menor)){
 			strcpy(menor,indice->coloniaBacteria);
 		}
 		indice = indice->siguiente;
@@ -121,6 +125,8 @@ char *encontrarMenor(lista *l){
 	return menor;
 }
 
+//Función que une las bacterias de la colonia
+//Entrada: colonia de bacterias, nueva colonia a agregar, posicion primero, posicion segunda
 char *unirBacterias(char *coloniaBacteria,char nuevaColonia, int primero, int segundo){
 
 	char *coloniaBacteriaAux = (char*)malloc(sizeof(char)*30);
@@ -132,10 +138,12 @@ char *unirBacterias(char *coloniaBacteria,char nuevaColonia, int primero, int se
 		coloniaBacteriaAux[i] = coloniaBacteriaAux[i + 1];		
 	}
 
-	//printf("Colonia bacteria aux: %s\n",coloniaBacteriaAux );
 	return coloniaBacteriaAux;
 }
 
+//Función que encuentra las colonias con mayor probabilidad de sobrevivencia
+//Entrada: colonia inicial
+//lista con colonias que sobreviven
 lista *modificarColoniasGoloso(char *coloniaInicial){
 
 	if(coloniaInicial == NULL)
@@ -148,16 +156,13 @@ lista *modificarColoniasGoloso(char *coloniaInicial){
 	while(listaColonias != NULL){
 		char *coloniaAux1 = (char*)malloc(sizeof(char)*30);
 		coloniaAux1 = encontrarMenor(listaColonias);
-		//strcpy(coloniaAux1,encontrarMenor(listaColonias));
 		listaColonias = anular(listaColonias);
-		//printf("Menor: %s\n",coloniaAux1 );
 		int i;
 		for(i = 0; i < strlen(coloniaAux1) - 1; i++){
 			char nuevoTipoColonia = compararColonia(coloniaAux1[i],coloniaAux1[i+1]);
-			if(nuevoTipoColonia != '4'){
+			if(nuevoTipoColonia != '4'){ //El valor -4 indica que no se pueden unir
 				char *coloniaAux2 = (char*)malloc(sizeof(char)*30);
 				coloniaAux2 = unirBacterias(coloniaAux1,nuevoTipoColonia,i,i+1);
-				//strcpy(coloniaAux2,unirBacterias(coloniaAux1,nuevoTipoColonia,i,i+1));
 				listaColonias = insertarFinal(listaColonias,coloniaAux2);
 			}
 		}
@@ -168,7 +173,7 @@ lista *modificarColoniasGoloso(char *coloniaInicial){
 }
 
 //Función encargada de mostrar en un archivo la salida
-//Entrada: menor camino como profundidad final
+//Entrada: lista con colonias
 //Salida:
 void escribirSalida(lista *l){
 

@@ -1,0 +1,3 @@
+Debido a la existencia de varias posibilidades optimas,
+se considerará principalmente el costo final al validar
+un caso de prueba
